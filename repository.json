@@ -8,14 +8,14 @@
       "name": "InventoryBot",
       "description": "Barcode scanner-based inventory management system",
       "repository": "https://github.com/njyjn/inventorybot",
-      "version": "1.1.4",
+      "version": "1.1.5",
       "slug": "inventorybot",
       "url": "https://github.com/njyjn/inventorybot",
       "icon": "mdi:barcode",
       "logo": "https://raw.githubusercontent.com/njyjn/inventorybot/main/logo.png",
-      "image": "ghcr.io/njyjn/inventorybot/{arch}",
-      "arch": ["aarch64", "amd64", "armv7"],
-      "machine": ["raspberrypi4", "generic-x86-64"]
+      "image": "ghcr.io/njyjn/inventorybot",
+      "arch": ["aarch64"],
+      "machine": ["raspberrypi4", "raspberrypi5"]
     }
   }
 }
