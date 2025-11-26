@@ -1,29 +1,59 @@
-name: Update Submodule on Release
+name: Update Submodule and Version
 
 on:
   repository_dispatch:
     types: [inventorybot-released]
 
 jobs:
-  update-submodule:
+  update:
     runs-on: ubuntu-latest
     permissions:
       contents: write
 
     steps:
-      - name: Checkout repository
+      - name: Checkout ha-addons repo
         uses: actions/checkout@v4
         with:
-          submodules: true
           token: ${{ secrets.GITHUB_TOKEN }}
+          submodules: true
 
-      - name: Update submodule
+      - name: Update submodule to latest
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git submodule update --remote inventorybot
           git add inventorybot
-          git commit -m "Update inventorybot submodule to latest"
-          git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }} main
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract version from submodule config.yaml
+        id: version
+        run: |
+          VERSION=$(grep '^version:' inventorybot/config.yaml | sed 's/version: "\(.*\)"/\1/')
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          echo "Extracted version: $VERSION"
+
+      - name: Update repository.json with new version
+        run: |
+          VERSION="${{ steps.version.outputs.VERSION }}"
+          python3 << 'EOF'
+          import json
+          
+          with open('repository.json', 'r') as f:
+              repo = json.load(f)
+          
+          repo['addons']['inventorybot']['version'] = "$VERSION"
+          
+          with open('repository.json', 'w') as f:
+              json.dump(repo, f, indent=2)
+          
+          print(f"Updated version to $VERSION")
+          EOF
+          git add repository.json
+
+      - name: Commit and push changes
+        run: |
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "chore: update inventorybot submodule and version to ${{ steps.version.outputs.VERSION }}"
+            git push origin main
+          fi
