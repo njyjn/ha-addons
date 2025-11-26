@@ -1,0 +1,3 @@
+[submodule "inventorybot"]
+	path = inventorybot
+	url = https://github.com/njyjn/inventorybot
