@@ -7,7 +7,7 @@ Personal Home Assistant add-ons repository.
 1. Go to Home Assistant Settings → Add-ons, Backups & Automations → Add-on Store
 2. Click the menu (⋮) in the top-right
 3. Select "Repositories"
-4. Add this URL: `https://github.com/njyjn/home-assistant-addons`
+4. Add this URL: `https://github.com/njyjn/ha-addons`
 5. Click "Create"
 
 The add-ons will now appear in your Add-on Store under "Justin's Home Assistant Add-ons".

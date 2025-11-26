@@ -1,8 +1,8 @@
 {
-  "name": "Justin's Home Assistant Add-ons",
-  "url": "https://github.com/njyjn/home-assistant-addons",
+  "name": "WuCasa HA Add-ons",
+  "url": "https://github.com/njyjn/ha-addons",
   "maintainer": "Justin",
-  "documentation": "https://github.com/njyjn/home-assistant-addons/blob/main/README.md",
+  "documentation": "https://github.com/njyjn/ha-addons/blob/main/README.md",
   "addons": {
     "inventorybot": {
       "name": "InventoryBot",
