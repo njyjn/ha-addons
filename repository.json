@@ -21,7 +21,7 @@
       "name": "BabyBot",
       "description": "Barcode scanner-based inventory management system",
       "repository": "https://github.com/njyjn/babybot",
-      "version": "0.0.12",
+      "version": "0.0.13",
       "slug": "babybot",
       "url": "https://github.com/njyjn/babybot",
       "icon": "mdi:baby-face",
