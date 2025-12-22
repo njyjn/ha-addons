@@ -2,7 +2,9 @@ name: Update Submodule and Version
 
 on:
   repository_dispatch:
-    types: [inventorybot-released]
+    types:
+      - inventorybot-released
+      - babybot-released
 
 jobs:
   update:
@@ -17,35 +19,49 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           submodules: true
 
+      - name: Determine submodule name from event
+        id: event
+        run: |
+          EVENT_TYPE="${{ github.event.action }}"
+          SUBMODULE_NAME="${EVENT_TYPE%-released}"
+          echo "SUBMODULE_NAME=$SUBMODULE_NAME" >> $GITHUB_OUTPUT
+          echo "Event: $EVENT_TYPE → Submodule: $SUBMODULE_NAME"
+
       - name: Update submodule to latest
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git submodule update --remote inventorybot
-          git add inventorybot
+          SUBMODULE="${{ steps.event.outputs.SUBMODULE_NAME }}"
+          git submodule update --remote "$SUBMODULE"
+          git add "$SUBMODULE"
 
       - name: Extract version from submodule config.yaml
         id: version
         run: |
-          VERSION=$(grep '^version:' inventorybot/config.yaml | sed 's/version: "\(.*\)"/\1/')
+          SUBMODULE="${{ steps.event.outputs.SUBMODULE_NAME }}"
+          VERSION=$(grep '^version:' "$SUBMODULE/config.yaml" | sed 's/version: "\(.*\)"/\1/')
           echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
           echo "Extracted version: $VERSION"
 
       - name: Update repository.json with new version
         run: |
+          SUBMODULE="${{ steps.event.outputs.SUBMODULE_NAME }}"
           VERSION="${{ steps.version.outputs.VERSION }}"
           python3 << 'EOF'
           import json
           
+          submodule = "$SUBMODULE"
+          version = "$VERSION"
+          
           with open('repository.json', 'r') as f:
               repo = json.load(f)
           
-          repo['addons']['inventorybot']['version'] = "$VERSION"
+          repo['addons'][submodule]['version'] = version
           
           with open('repository.json', 'w') as f:
               json.dump(repo, f, indent=2)
           
-          print(f"Updated version to $VERSION")
+          print(f"Updated {submodule} version to {version}")
           EOF
           git add repository.json
 
@@ -54,6 +70,8 @@ jobs:
           if git diff --cached --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "chore: update inventorybot submodule and version to ${{ steps.version.outputs.VERSION }}"
+            SUBMODULE="${{ steps.event.outputs.SUBMODULE_NAME }}"
+            VERSION="${{ steps.version.outputs.VERSION }}"
+            git commit -m "chore: update $SUBMODULE submodule and version to $VERSION"
             git push origin main
           fi

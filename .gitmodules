@@ -1,3 +1,6 @@
 [submodule "inventorybot"]
 	path = inventorybot
 	url = https://github.com/njyjn/inventorybot
+[submodule "babybot"]
+	path = babybot
+	url = https://github.com/njyjn/babybot

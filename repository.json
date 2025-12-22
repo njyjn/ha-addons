@@ -16,6 +16,19 @@
       "image": "ghcr.io/njyjn/inventorybot",
       "arch": ["aarch64"],
       "machine": ["raspberrypi4", "raspberrypi5"]
+    },
+    "babybot": {
+      "name": "BabyBot",
+      "description": "Barcode scanner-based inventory management system",
+      "repository": "https://github.com/njyjn/babybot",
+      "version": "0.0.1",
+      "slug": "babybot",
+      "url": "https://github.com/njyjn/babybot",
+      "icon": "mdi:barcode",
+      "logo": "https://raw.githubusercontent.com/njyjn/babybot/main/logo.png",
+      "image": "ghcr.io/njyjn/babybot",
+      "arch": ["aarch64"],
+      "machine": ["raspberrypi4", "raspberrypi5"]
     }
   }
 }
