@@ -15,6 +15,7 @@ The add-ons will now appear in your Add-on Store under "Justin's Home Assistant 
 ## Available Add-ons
 
 ### InventoryBot
+
 Barcode scanner-based inventory management system with real-time quantity tracking and transaction history.
 
 - **Repository**: [njyjn/inventorybot](https://github.com/njyjn/inventorybot)
@@ -22,6 +23,16 @@ Barcode scanner-based inventory management system with real-time quantity tracki
 - **Supported Architectures**: aarch64, amd64, armv7
 
 For full documentation, see the [InventoryBot README](https://github.com/njyjn/inventorybot/blob/main/README.md).
+
+### BabyBot
+
+Baby care tracking and management system.
+
+- **Repository**: [njyjn/babybot](https://github.com/njyjn/babybot)
+- **Image**: `ghcr.io/njyjn/babybot`
+- **Supported Architectures**: aarch64
+
+For full documentation, see the [BabyBot README](https://github.com/njyjn/babybot/blob/main/README.md).
 
 ## Updates
 

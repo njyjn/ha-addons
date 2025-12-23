@@ -5,6 +5,16 @@ on:
     types:
       - inventorybot-released
       - babybot-released
+  workflow_dispatch:
+    inputs:
+      submodule:
+        description: "Submodule to update"
+        required: true
+        default: "babybot"
+        type: choice
+        options:
+          - inventorybot
+          - babybot
 
 jobs:
   update:
@@ -22,10 +32,16 @@ jobs:
       - name: Determine submodule name from event
         id: event
         run: |
-          EVENT_TYPE="${{ github.event.action }}"
-          SUBMODULE_NAME="${EVENT_TYPE%-released}"
+          # Handle both repository_dispatch and workflow_dispatch
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            SUBMODULE_NAME="${{ github.event.inputs.submodule }}"
+          else
+            EVENT_TYPE="${{ github.event.action }}"
+            SUBMODULE_NAME="${EVENT_TYPE%-released}"
+          fi
+
           echo "SUBMODULE_NAME=$SUBMODULE_NAME" >> $GITHUB_OUTPUT
-          echo "Received dispatch event: $EVENT_TYPE"
+          echo "Received event: ${{ github.event_name }}"
           echo "Submodule to update: $SUBMODULE_NAME"
 
           # Validate that submodule exists in .gitmodules
@@ -54,17 +70,17 @@ jobs:
         run: |
           SUBMODULE="${{ steps.event.outputs.SUBMODULE_NAME }}"
           VERSION="${{ steps.version.outputs.VERSION }}"
-          python3 << 'EOF'
+          python3 << EOF
           import json
 
           submodule = "$SUBMODULE"
           version = "$VERSION"
-          
+
           with open('repository.json', 'r') as f:
               repo = json.load(f)
 
           repo['addons'][submodule]['version'] = version
-          
+
           with open('repository.json', 'w') as f:
               json.dump(repo, f, indent=2)
 
