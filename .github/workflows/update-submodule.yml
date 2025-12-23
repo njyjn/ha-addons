@@ -25,7 +25,14 @@ jobs:
           EVENT_TYPE="${{ github.event.action }}"
           SUBMODULE_NAME="${EVENT_TYPE%-released}"
           echo "SUBMODULE_NAME=$SUBMODULE_NAME" >> $GITHUB_OUTPUT
-          echo "Event: $EVENT_TYPE → Submodule: $SUBMODULE_NAME"
+          echo "Received dispatch event: $EVENT_TYPE"
+          echo "Submodule to update: $SUBMODULE_NAME"
+
+          # Validate that submodule exists in .gitmodules
+          if ! grep -q "path = $SUBMODULE_NAME" .gitmodules; then
+            echo "ERROR: Submodule '$SUBMODULE_NAME' not found in .gitmodules"
+            exit 1
+          fi
 
       - name: Update submodule to latest
         run: |
@@ -49,18 +56,18 @@ jobs:
           VERSION="${{ steps.version.outputs.VERSION }}"
           python3 << 'EOF'
           import json
-          
+
           submodule = "$SUBMODULE"
           version = "$VERSION"
           
           with open('repository.json', 'r') as f:
               repo = json.load(f)
-          
+
           repo['addons'][submodule]['version'] = version
           
           with open('repository.json', 'w') as f:
               json.dump(repo, f, indent=2)
-          
+
           print(f"Updated {submodule} version to {version}")
           EOF
           git add repository.json
