@@ -5,6 +5,7 @@ on:
     types:
       - inventorybot-released
       - babybot-released
+      - flightbot-released
   workflow_dispatch:
     inputs:
       submodule:
@@ -15,6 +16,7 @@ on:
         options:
           - inventorybot
           - babybot
+          - flightbot
 
 jobs:
   update:

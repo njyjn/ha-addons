@@ -34,6 +34,16 @@ Baby care tracking and management system.
 
 For full documentation, see the [BabyBot README](https://github.com/njyjn/babybot/blob/main/README.md).
 
+### FlightBot
+
+ADS-B receiver (readsb + tar1090) for an RTL-SDR stick such as the RadarBox FlightStick.
+
+- **Repository**: [njyjn/flightbot](https://github.com/njyjn/flightbot)
+- **Image**: `ghcr.io/njyjn/flightbot`
+- **Supported Architectures**: aarch64
+
+For full documentation, see the [FlightBot README](https://github.com/njyjn/flightbot/blob/main/README.md).
+
 ## Updates
 
 Add-ons are automatically updated when new versions are pushed to GitHub Container Registry. Simply restart the add-on in Home Assistant to pull the latest image.
