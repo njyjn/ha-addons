@@ -44,7 +44,7 @@
       "name": "FlightBot",
       "description": "ADS-B receiver (readsb + tar1090) for an RTL-SDR stick",
       "repository": "https://github.com/njyjn/flightbot",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "slug": "flightbot",
       "url": "https://github.com/njyjn/flightbot",
       "icon": "mdi:airplane",
