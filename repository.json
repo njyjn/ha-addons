@@ -39,6 +39,23 @@
         "raspberrypi4",
         "raspberrypi5"
       ]
+    },
+    "flightbot": {
+      "name": "FlightBot",
+      "description": "ADS-B receiver (readsb + tar1090) for an RTL-SDR stick",
+      "repository": "https://github.com/njyjn/flightbot",
+      "version": "0.1.0",
+      "slug": "flightbot",
+      "url": "https://github.com/njyjn/flightbot",
+      "icon": "mdi:airplane",
+      "image": "ghcr.io/njyjn/flightbot",
+      "arch": [
+        "aarch64"
+      ],
+      "machine": [
+        "raspberrypi4",
+        "raspberrypi5"
+      ]
     }
   }
 }

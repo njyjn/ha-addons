@@ -4,3 +4,6 @@
 [submodule "babybot"]
 	path = babybot
 	url = https://github.com/njyjn/babybot
+[submodule "flightbot"]
+	path = flightbot
+	url = https://github.com/njyjn/flightbot
