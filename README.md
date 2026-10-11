@@ -48,10 +48,11 @@ For full documentation, see the [FlightBot README](https://github.com/njyjn/flig
 
 Household chore tracker: the helper ticks chores off on the guardhouse tablet, and Home Assistant gets a sensor plus a daily alert for anything overdue.
 
-- **Source**: [`chorebot/`](chorebot) in this repository (built on the device, no prebuilt image yet)
+- **Repository**: [njyjn/chorebot](https://github.com/njyjn/chorebot)
+- **Image**: `ghcr.io/njyjn/chorebot`
 - **Supported Architectures**: aarch64
 
-For full documentation, see the [ChoreBot README](chorebot/README.md).
+For full documentation, see the [ChoreBot README](https://github.com/njyjn/chorebot/blob/main/README.md).
 
 ## Updates
 

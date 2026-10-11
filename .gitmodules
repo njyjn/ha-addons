@@ -7,3 +7,6 @@
 [submodule "flightbot"]
 	path = flightbot
 	url = https://github.com/njyjn/flightbot
+[submodule "chorebot"]
+	path = chorebot
+	url = https://github.com/njyjn/chorebot

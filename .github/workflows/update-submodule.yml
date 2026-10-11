@@ -6,6 +6,7 @@ on:
       - inventorybot-released
       - babybot-released
       - flightbot-released
+      - chorebot-released
   workflow_dispatch:
     inputs:
       submodule:
@@ -17,6 +18,7 @@ on:
           - inventorybot
           - babybot
           - flightbot
+          - chorebot
 
 jobs:
   update:
