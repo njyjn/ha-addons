@@ -44,6 +44,16 @@ ADS-B receiver (readsb + tar1090) for an RTL-SDR stick such as the RadarBox Flig
 
 For full documentation, see the [FlightBot README](https://github.com/njyjn/flightbot/blob/main/README.md).
 
+### ChoreBot
+
+Household chore tracker: the helper ticks chores off on the guardhouse tablet, and Home Assistant gets a sensor plus a daily alert for anything overdue.
+
+- **Repository**: [njyjn/chorebot](https://github.com/njyjn/chorebot)
+- **Image**: `ghcr.io/njyjn/chorebot`
+- **Supported Architectures**: aarch64
+
+For full documentation, see the [ChoreBot README](https://github.com/njyjn/chorebot/blob/main/README.md).
+
 ## Updates
 
 Add-ons are automatically updated when new versions are pushed to GitHub Container Registry. Simply restart the add-on in Home Assistant to pull the latest image.
