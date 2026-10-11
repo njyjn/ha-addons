@@ -1,0 +1,47 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Task {
+  id           Int          @id @default(autoincrement())
+  room         String
+  name         String
+  // "daily" | "every_n_days" | "weekly" | "monthly"
+  cadence      String
+  // completions required per week/month (weekly, monthly)
+  timesPer     Int          @default(1)
+  // days between completions (every_n_days)
+  intervalDays Int          @default(1)
+  sortOrder    Int          @default(0)
+  archived     Boolean      @default(false)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  completions  Completion[]
+}
+
+model Completion {
+  id          Int      @id @default(autoincrement())
+  taskId      Int
+  // local calendar day, YYYY-MM-DD
+  day         String
+  completedAt DateTime @default(now())
+  completedBy String?
+
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@index([taskId, day])
+  @@index([day])
+}
+
+model AlertLog {
+  id     Int      @id @default(autoincrement())
+  // local calendar day the digest covers, YYYY-MM-DD
+  day    String   @unique
+  sentAt DateTime @default(now())
+  count  Int
+}
