@@ -73,6 +73,23 @@
         "raspberrypi4",
         "raspberrypi5"
       ]
+    },
+    "hypebot": {
+      "name": "HypeBot",
+      "description": "Alerts when hard-to-find products are in stock for store pickup",
+      "repository": "https://github.com/njyjn/hypebot",
+      "version": "0.1.0",
+      "slug": "hypebot",
+      "url": "https://github.com/njyjn/hypebot",
+      "icon": "mdi:bell-ring",
+      "image": "ghcr.io/njyjn/hypebot",
+      "arch": [
+        "aarch64"
+      ],
+      "machine": [
+        "raspberrypi4",
+        "raspberrypi5"
+      ]
     }
   }
 }

@@ -10,3 +10,6 @@
 [submodule "chorebot"]
 	path = chorebot
 	url = https://github.com/njyjn/chorebot
+[submodule "hypebot"]
+	path = hypebot
+	url = https://github.com/njyjn/hypebot

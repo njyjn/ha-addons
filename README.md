@@ -54,6 +54,16 @@ Household chore tracker: the helper ticks chores off on the guardhouse tablet, a
 
 For full documentation, see the [ChoreBot README](https://github.com/njyjn/chorebot/blob/main/README.md).
 
+### HypeBot
+
+Stock alerts for hard-to-find products: checks Apple Store Singapore pickup availability for the models you pick and alerts via Slack, Telegram or a Home Assistant notify service, with a sensor per model.
+
+- **Repository**: [njyjn/hypebot](https://github.com/njyjn/hypebot)
+- **Image**: `ghcr.io/njyjn/hypebot`
+- **Supported Architectures**: aarch64
+
+For full documentation, see the [HypeBot README](https://github.com/njyjn/hypebot/blob/main/README.md).
+
 ## Updates
 
 Add-ons are automatically updated when new versions are pushed to GitHub Container Registry. Simply restart the add-on in Home Assistant to pull the latest image.
