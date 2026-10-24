@@ -7,6 +7,7 @@ on:
       - babybot-released
       - flightbot-released
       - chorebot-released
+      - hypebot-released
   workflow_dispatch:
     inputs:
       submodule:
@@ -19,6 +20,7 @@ on:
           - babybot
           - flightbot
           - chorebot
+          - hypebot
 
 jobs:
   update:
