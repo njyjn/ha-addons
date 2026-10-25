@@ -64,6 +64,17 @@ Stock alerts for hard-to-find products: checks Apple Store Singapore pickup avai
 
 For full documentation, see the [HypeBot README](https://github.com/njyjn/hypebot/blob/main/README.md).
 
+### ConfigSync
+
+Mirrors the Home Assistant config into a private Git repository on a daily or weekly schedule, using that repository's own allowlists, redaction and secret scanning, and reports to `sensor.configsync_last_run`. Unlike the add-ons above it lives in this repository and is built on the Pi; there is no prebuilt image.
+
+- **Source**: [`configsync/`](configsync/)
+- **Supported Architectures**: aarch64
+
+For full documentation, see the [ConfigSync docs](configsync/DOCS.md).
+
 ## Updates
 
 Add-ons are automatically updated when new versions are pushed to GitHub Container Registry. Simply restart the add-on in Home Assistant to pull the latest image.
+
+ConfigSync is the exception: it builds on the Pi, and Home Assistant offers an update when the `version` in `configsync/config.yaml` is bumped.
