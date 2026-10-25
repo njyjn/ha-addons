@@ -180,7 +180,9 @@ def _prepare_clone(opts: dict, repo: Path, env: dict) -> None:
     else:
         _git(["remote", "set-url", "origin", url], env, repo)
         _git(["fetch", "--quiet", "origin", branch], env, repo)
-        _git(["checkout", "--quiet", "-B", branch, f"origin/{branch}"], env, repo)
+        # -f: a run that died after pulling leaves config/ and storage/ dirty;
+        # that must never block the next run.
+        _git(["checkout", "--quiet", "-f", "-B", branch, f"origin/{branch}"], env, repo)
         _git(["reset", "--quiet", "--hard", f"origin/{branch}"], env, repo)
         _git(["clean", "-qfdx"], env, repo)
     _git(["config", "user.name", opts.get("git_author_name") or "ConfigSync"], env, repo)
@@ -243,7 +245,11 @@ def run_sync(opts: dict, paths: Paths, timeout: int = SYNC_TIMEOUT) -> dict:
         _prepare_clone(opts, repo, env)
         before = _git(["rev-parse", "HEAD"], env, repo)
         log.info("Running ha-sync.sh against %s", paths.ha_config)
-        _run_script(repo, {**env, "HA_LOCAL_CONFIG": str(paths.ha_config)}, timeout)
+        # Without git's push advice, a rejected push ends in the "! [rejected]"
+        # and "error: failed to push" lines rather than five "hint:" lines.
+        script_env = {**env, "HA_LOCAL_CONFIG": str(paths.ha_config), "GIT_CONFIG_COUNT": "1",
+                      "GIT_CONFIG_KEY_0": "advice.pushUpdateRejected", "GIT_CONFIG_VALUE_0": "false"}
+        _run_script(repo, script_env, timeout)
         after = _git(["rev-parse", "HEAD"], env, repo)
     except (ValueError, SyncError) as exc:
         log.error("Sync failed: %s", exc)
@@ -298,6 +304,28 @@ class HA:
 
 # --- scheduling -------------------------------------------------------------
 
+def run_and_report(opts: dict, paths: Paths, ha: HA, upcoming, status: dict) -> dict:
+    """Run one sync and report it. Never raises: an exception here would stop
+    the app and leave the sensor showing the previous result indefinitely."""
+    ha.post_status({**status, "state": "running"})
+    try:
+        new = run_sync(opts, paths)
+        new["next_run"] = upcoming().isoformat(timespec="seconds")
+        save_status(paths, new)
+    except Exception as exc:
+        log.exception("Reporting the sync failed")
+        new = {**status, "state": "failed", "last_run": now_iso(),
+               "error": f"internal error: {type(exc).__name__}: {exc}"[:ERROR_CAP]}
+        try:
+            new["next_run"] = upcoming().isoformat(timespec="seconds")
+        except Exception:
+            pass
+    ha.post_status(new)
+    if new["state"] == "failed" and opts.get("notify_service"):
+        ha.notify(opts["notify_service"], new.get("error", ""))
+    return new
+
+
 def wait_for_trigger(deadline: float, stream) -> str:
     """Wait until `deadline` (epoch seconds) or a `sync` line on `stream`.
 
@@ -348,14 +376,7 @@ def main() -> None:
     ha.post_status(status)
 
     def do_run() -> dict:
-        ha.post_status({**status, "state": "running"})
-        new = run_sync(opts, paths)
-        new["next_run"] = upcoming().isoformat(timespec="seconds")
-        save_status(paths, new)
-        ha.post_status(new)
-        if new["state"] == "failed" and opts.get("notify_service"):
-            ha.notify(opts["notify_service"], new["error"])
-        return new
+        return run_and_report(opts, paths, ha, upcoming, status)
 
     if opts.get("run_on_start", True):
         status = do_run()

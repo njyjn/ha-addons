@@ -10,8 +10,8 @@ allowlists, denylist, scrub rules and gitleaks scan) lives in the private
 repository, not in this app. The app only schedules the run, authenticates
 with a deploy key, and reports back.
 
-The repository must provide `bin/ha-sync.sh` with local mode
-(`HA_LOCAL_CONFIG`), as `njyjn/homeassistant-config` does.
+The repository must provide a `bin/ha-sync.sh` that supports local mode
+(`HA_LOCAL_CONFIG`).
 
 ## Options
 

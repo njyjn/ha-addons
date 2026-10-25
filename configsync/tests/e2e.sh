@@ -9,11 +9,11 @@
 #
 # Needs: docker (with arm64 emulation on non-arm64 hosts), python3, git,
 # ssh-keygen, and a checkout of the private config repo:
-#   CONFIGSYNC_SYNC_REPO=/path/to/homeassistant-config IMAGE=configsync:test tests/e2e.sh
+#   CONFIGSYNC_SYNC_REPO=/path/to/private-config-repo IMAGE=configsync:test tests/e2e.sh
 
 set -euo pipefail
 
-SRC="${CONFIGSYNC_SYNC_REPO:-/home/user/homeassistant-config}"
+SRC="${CONFIGSYNC_SYNC_REPO:?set CONFIGSYNC_SYNC_REPO to a checkout of the private config repo}"
 IMAGE="${IMAGE:-configsync:test}"
 WAIT="${WAIT:-600}"
 NAME="configsync-e2e-$$"

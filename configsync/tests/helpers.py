@@ -13,10 +13,12 @@ GITHUB_KNOWN_HOSTS = (
 
 # The private config repo holds bin/ha-sync.sh and the allowlists. It cannot
 # be vendored into this public repo, so the sync tests need a checkout of it.
-SYNC_REPO = Path(os.environ.get("CONFIGSYNC_SYNC_REPO", "/home/user/homeassistant-config"))
+SYNC_REPO = Path(os.environ.get("CONFIGSYNC_SYNC_REPO", ""))
 
 
 def sync_repo_available() -> bool:
+    if not os.environ.get("CONFIGSYNC_SYNC_REPO"):
+        return False
     script = SYNC_REPO / "bin" / "ha-sync.sh"
     return script.is_file() and "HA_LOCAL_CONFIG" in script.read_text()
 

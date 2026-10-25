@@ -8,18 +8,19 @@ import sys
 import tempfile
 import time
 import unittest
+from datetime import datetime, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import configsync  # noqa: E402
-from helpers import (GITHUB_KNOWN_HOSTS, StubHA, build_ha_tree, git, make_key,  # noqa: E402
-                     make_remote, push_change, sync_repo_available)
+from helpers import (GITHUB_KNOWN_HOSTS, SYNC_REPO, StubHA, build_ha_tree, git,  # noqa: E402
+                     make_key, make_remote, push_change, sync_repo_available)
 
 
 @unittest.skipUnless(sync_repo_available(),
-                     "needs a homeassistant-config checkout with local mode (set CONFIGSYNC_SYNC_REPO)")
+                     "needs CONFIGSYNC_SYNC_REPO: a checkout of the private config repo with local mode")
 class RunSyncTests(unittest.TestCase):
     def setUp(self):
         self._tmp = tempfile.TemporaryDirectory()
@@ -108,6 +109,41 @@ class RunSyncTests(unittest.TestCase):
         self.assertEqual(s["state"], "failed")
         self.assertTrue(s["error"].startswith("ha-sync.sh timed out after"), s["error"])
 
+    def test_failed_run_does_not_block_next(self):
+        """A run that dies after pulling leaves config/ and storage/ dirty; when
+        origin then moves on those files, the next run must still succeed."""
+        self.assertEqual(configsync.run_sync(self.opts, self.paths)["state"], "ok")
+        allowlist = "bin/allowlist-config.txt"
+        original = (SYNC_REPO / allowlist).read_text()
+        push_change(self.remote, self.branch, self.tmp, allowlist, original + "secrets.yaml\n")
+        failed = configsync.run_sync(self.opts, self.paths)
+        self.assertEqual(failed["state"], "failed")
+        self.assertIn("denied", failed["error"])
+        push_change(self.remote, self.branch, self.tmp, allowlist, original)
+        push_change(self.remote, self.branch, self.tmp, "storage/core.area_registry.json",
+                    '{"changed": "by another machine"}\n')
+        s = configsync.run_sync(self.opts, self.paths)
+        self.assertEqual(s["state"], "ok", s["error"])
+
+    def test_non_fast_forward_error_is_readable(self):
+        """Another machine pushes while this run is in progress: the error
+        names the rejection, not just git's advice lines."""
+        competitor = self.tmp / "competitor"
+        hook = ("#!/usr/bin/env bash\n"
+                "env -u GIT_INDEX_FILE -u GIT_DIR -u GIT_WORK_TREE -u GIT_PREFIX \\\n"
+                f"  git -C {competitor} push -q origin HEAD:{self.branch} || true\n"
+                "exit 0\n")
+        push_change(self.remote, self.branch, self.tmp, ".githooks/pre-commit", hook, 0o755)
+        git("clone", "--quiet", "--branch", self.branch, f"file://{self.remote}", str(competitor))
+        (competitor / "elsewhere.txt").write_text("pushed by another machine\n")
+        git("add", "elsewhere.txt", cwd=competitor)
+        git("-c", "user.name=t", "-c", "user.email=t@example.invalid", "-c", "core.hooksPath=/dev/null",
+            "commit", "--quiet", "-m", "test: competing commit", cwd=competitor)
+        s = configsync.run_sync(self.opts, self.paths)
+        self.assertEqual(s["state"], "failed")
+        self.assertIn("rejected", s["error"])
+        self.assertNotIn("hint:", s["error"])
+
     def test_no_key_in_output(self):
         body_line = self.key_text.splitlines()[1]
         with self.assertLogs("configsync", level="DEBUG") as logs:
@@ -154,6 +190,32 @@ class HATests(unittest.TestCase):
             self.assertEqual(attrs[key], self.STATUS[key])
         self.assertEqual(note["path"], "/services/notify/x")
         self.assertEqual(note["body"], {"title": "ConfigSync failed", "message": "m"})
+
+
+class RunAndReportTests(unittest.TestCase):
+    def test_survives_unexpected_error(self):
+        """If saving status blows up (e.g. /data full), the loop must not die:
+        the run is reported as failed and the function returns."""
+        with tempfile.TemporaryDirectory() as tmp:
+            not_a_dir = Path(tmp) / "data"
+            not_a_dir.write_text("a file where /data should be")
+            paths = configsync.Paths(data=not_a_dir, ha_config=Path(tmp), key_dir=Path(tmp) / "k")
+            stub = StubHA()
+            try:
+                ha = configsync.HA(stub.url, "t")
+                opts = {"repository": "file:///nope", "deploy_key": "x",
+                        "git_author_email": "a@b.c", "notify_service": "n"}
+                with self.assertLogs("configsync", level="ERROR"):
+                    status = configsync.run_and_report(
+                        opts, paths, ha, lambda: datetime(2026, 10, 26, 3, 40, tzinfo=timezone.utc),
+                        {"state": "never"})
+            finally:
+                stub.close()
+        self.assertEqual(status["state"], "failed")
+        posted = [r["body"]["state"] for r in stub.requests if r["path"].startswith("/states/")]
+        self.assertEqual(posted[0], "running")
+        self.assertEqual(posted[-1], "failed")
+        self.assertTrue(any(r["path"] == "/services/notify/n" for r in stub.requests))
 
 
 class WaitForTriggerTests(unittest.TestCase):
