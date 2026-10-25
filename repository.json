@@ -61,7 +61,7 @@
       "name": "ChoreBot",
       "description": "Household chore tracker with overdue alerts",
       "repository": "https://github.com/njyjn/chorebot",
-      "version": "0.2.2",
+      "version": "0.3.0",
       "slug": "chorebot",
       "url": "https://github.com/njyjn/chorebot",
       "icon": "mdi:broom",
