@@ -2,7 +2,6 @@
 
 Run from configsync/:  python3 -m unittest discover -s tests -v
 """
-import subprocess
 import sys
 import tempfile
 import time
@@ -11,20 +10,13 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import configsync  # noqa: E402
+from helpers import make_key  # noqa: E402
 
 TZ = timezone(timedelta(hours=8))
 KEY_ERROR = "deploy key is not a valid private key"
-
-
-def make_key(directory: Path, passphrase: str = "") -> Path:
-    path = directory / "id_ed25519"
-    subprocess.run(
-        ["ssh-keygen", "-q", "-t", "ed25519", "-N", passphrase, "-C", "", "-f", str(path)],
-        check=True,
-    )
-    return path
 
 
 class RepairKeyTests(unittest.TestCase):
