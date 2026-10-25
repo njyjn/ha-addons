@@ -1,0 +1,36 @@
+name: "ConfigSync"
+version: "0.1.0"
+slug: "configsync"
+description: "Mirrors the Home Assistant config to a private Git repo on a schedule"
+url: "https://github.com/njyjn/ha-addons/tree/main/configsync"
+arch:
+  - aarch64
+startup: application
+boot: auto
+stdin: true
+homeassistant_api: true
+map:
+  - type: homeassistant_config
+    read_only: true
+options:
+  repository: ""
+  branch: "main"
+  deploy_key: ""
+  frequency: "daily"
+  time: "03:40"
+  weekday: "sun"
+  run_on_start: true
+  git_author_name: "ConfigSync"
+  git_author_email: ""
+  notify_service: ""
+schema:
+  repository: "str"
+  branch: "str"
+  deploy_key: "password"
+  frequency: "list(daily|weekly)"
+  time: "match(^([01][0-9]|2[0-3]):[0-5][0-9]$)"
+  weekday: "list(mon|tue|wed|thu|fri|sat|sun)"
+  run_on_start: "bool"
+  git_author_name: "str"
+  git_author_email: "str"
+  notify_service: "str?"

@@ -90,6 +90,21 @@
         "raspberrypi4",
         "raspberrypi5"
       ]
+    },
+    "configsync": {
+      "name": "ConfigSync",
+      "description": "Mirrors the Home Assistant config to a private Git repo on a schedule",
+      "version": "0.1.0",
+      "slug": "configsync",
+      "url": "https://github.com/njyjn/ha-addons/tree/main/configsync",
+      "icon": "mdi:source-branch-sync",
+      "arch": [
+        "aarch64"
+      ],
+      "machine": [
+        "raspberrypi4",
+        "raspberrypi5"
+      ]
     }
   }
 }
