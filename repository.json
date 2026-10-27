@@ -78,7 +78,7 @@
       "name": "HypeBot",
       "description": "Alerts when hard-to-find products are in stock for store pickup",
       "repository": "https://github.com/njyjn/hypebot",
-      "version": "0.9.0",
+      "version": "0.10.0",
       "slug": "hypebot",
       "url": "https://github.com/njyjn/hypebot",
       "icon": "mdi:bell-ring",
