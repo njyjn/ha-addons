@@ -73,8 +73,17 @@ Mirrors the Home Assistant config into a private Git repository on a daily or we
 
 For full documentation, see the [ConfigSync docs](configsync/DOCS.md).
 
+### Proton Proxy
+
+Runs a Proton VPN (WireGuard) connection using the official [Gluetun](https://github.com/qdm12/gluetun) image and offers it as an HTTP proxy to other apps, e.g. HypeBot's `proxy_url`, so their traffic leaves through Proton instead of your home IP. No port is opened on the home network. Like ConfigSync it lives in this repository and is built on the Pi.
+
+- **Source**: [`proton-proxy/`](proton-proxy/)
+- **Supported Architectures**: aarch64, amd64
+
+For full documentation, see the [Proton Proxy docs](proton-proxy/DOCS.md).
+
 ## Updates
 
 Add-ons are automatically updated when new versions are pushed to GitHub Container Registry. Simply restart the add-on in Home Assistant to pull the latest image.
 
-ConfigSync is the exception: it builds on the Pi, and Home Assistant offers an update when the `version` in `configsync/config.yaml` is bumped.
+ConfigSync and Proton Proxy are the exceptions: they build on the Pi, and Home Assistant offers an update when the `version` in their `config.yaml` is bumped.
