@@ -105,6 +105,18 @@
         "raspberrypi4",
         "raspberrypi5"
       ]
+    },
+    "proton-proxy": {
+      "name": "Proton Proxy",
+      "description": "Proton VPN (WireGuard) as an HTTP proxy for other apps, e.g. HypeBot",
+      "version": "1.0.0",
+      "slug": "proton-proxy",
+      "url": "https://github.com/njyjn/ha-addons/tree/main/proton-proxy",
+      "icon": "mdi:shield-lock",
+      "arch": [
+        "aarch64",
+        "amd64"
+      ]
     }
   }
 }
