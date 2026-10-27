@@ -6,7 +6,8 @@ set -euo pipefail
 OPTIONS=/data/options.json
 opt() { jq -r --arg k "$1" '.[$k] // empty' "$OPTIONS"; }
 
-key="$(opt wireguard_private_key)"
+# Accept the whole "PrivateKey = ..." line or stray spaces, as pasted from Proton's config.
+key="$(opt wireguard_private_key | sed -E 's/^[[:space:]]*(PrivateKey[[:space:]]*=[[:space:]]*)?//; s/[[:space:]]+$//')"
 if [ -z "$key" ]; then
   echo "[proton-proxy] Set wireguard_private_key (the PrivateKey line from a Proton WireGuard config) in the app's Configuration, then start the app again." >&2
   exit 1

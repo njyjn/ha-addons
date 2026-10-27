@@ -34,6 +34,11 @@ proxy rather than letting traffic out over your home connection.
 
 ## Notes
 
+- Turn on **Watchdog** on the app's Info page, so Home Assistant restarts
+  it if Gluetun stops (e.g. a Proton outage at startup).
+- Any app on this Home Assistant can use the proxy; it has no password.
+  That's fine for apps you installed yourself, but don't install apps you
+  don't trust alongside it.
 - The proxy listens on port 8888 inside Home Assistant only. No port is
   opened on your home network.
 - The app needs network-admin permission and the VPN device. Every VPN app

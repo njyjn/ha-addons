@@ -39,5 +39,9 @@ done
 grep -qF "(Japan, Tokyo, free servers only)" <<<"$out" || { echo "FAIL: startup message"; fail=1; }
 [ $fail -eq 0 ] && echo "PASS: optional settings"
 
+# 4. A pasted "PrivateKey = ..." line with spaces is cleaned up.
+out=$(run "{\"wireguard_private_key\":\"  PrivateKey = $KEY  \",\"server_countries\":\"Singapore\",\"free_only\":false}")
+grep -qxF "WIREGUARD_PRIVATE_KEY=$KEY" <<<"$out" && echo "PASS: pasted key cleaned" || { echo "FAIL: pasted key not cleaned"; fail=1; }
+
 rm -rf "$TMP"
 exit $fail
